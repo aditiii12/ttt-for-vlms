@@ -3,402 +3,306 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- Primary Meta Tags -->
   <meta name="title" content="Test-Time Training for Modality Order Consistency in Vision-Language Models - Aditi Gupta, Yossi Gandelsman">
-  <meta name="description" content="VLMs answer differently depending on whether the image or question comes first. We localize this failure to a narrow mid-network layer band and show asymmetric test-time training closes the gap — and even improves the stronger ordering.">
+  <meta name="description" content="VLMs answer differently depending on whether the image or question comes first. We localize this failure to a narrow mid-network layer band and repair it at test time.">
   <meta name="keywords" content="vision-language models, test-time training, modality ordering, activation patching, VLM robustness, multimodal reasoning, MMStar, RealWorldQA, AI2D">
   <meta name="author" content="Aditi Gupta, Yossi Gandelsman">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
-  
-    <!-- Open Graph / Facebook -->
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="TTIC">
   <meta property="og:title" content="Order Matters: Test-Time Training Fixes Modality-Order Sensitivity in VLMs">
   <meta property="og:description" content="Vision-language models answer differently depending on whether the image or question comes first. We localize this failure to a narrow mid-network layer band and show test-time training closes the gap without retraining.">
   <meta property="og:url" content="https://aditiii12.github.io/ttt-for-vlms/">
-  <meta property="og:image" content="https://aditiii12.github.io/ttt-for-vlms/static/images/social_preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Order Matters: Test-Time Training Fixes Modality-Order Sensitivity in VLMs - Research Preview">
-  <meta property="article:published_time" content="2026-07-16T00:00:00.000Z">
-  <meta property="article:author" content="Aditi Gupta">
-  <meta property="article:section" content="Research">
-  <meta property="article:tag" content="vision-language models">
-  <meta property="article:tag" content="test-time training">
+  <meta property="og:image" content="https://aditiii12.github.io/ttt-for-vlms/static/images/teaser.png">
+  <meta property="og:image:alt" content="Image-first and question-first prompts produce different predictions">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <!-- TODO: Replace with your lab/institution Twitter handle -->
-  <meta name="twitter:site" content="@YOUR_TWITTER_HANDLE">
-  <!-- TODO: Replace with first author's Twitter handle -->
-  <meta name="twitter:creator" content="@AUTHOR_TWITTER_HANDLE">
-  <!-- TODO: Same as paper title above -->
-  <meta name="twitter:title" content="PAPER_TITLE">
-  <!-- TODO: Same as description above -->
-  <meta name="twitter:description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Same as social preview image above -->
-  <meta name="twitter:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
-  <meta name="twitter:image:alt" content="PAPER_TITLE - Research Preview">
+  <meta name="twitter:title" content="Order Matters: Test-Time Training Fixes Modality-Order Sensitivity in VLMs">
+  <meta name="twitter:description" content="VLMs answer differently depending on whether the image or question comes first. We localize the failure and repair it at test time.">
+  <meta name="twitter:image" content="https://aditiii12.github.io/ttt-for-vlms/static/images/teaser.png">
 
-  <!-- Academic/Research Specific -->
-  <!-- Academic/Research Specific -->
+  <!-- Academic -->
   <meta name="citation_title" content="Test-Time Training for Modality Order Consistency in Vision-Language Models">
   <meta name="citation_author" content="Gupta, Aditi">
   <meta name="citation_author" content="Gandelsman, Yossi">
   <meta name="citation_publication_date" content="2026">
-  <!-- <meta name="citation_conference_title" content=""> -->
-  <meta name="citation_pdf_url" content="https://aditiii12.github.io/ttt-for-vlms/static/pdfs/paper.pdf">
-  
-  <!-- Additional SEO -->
+
   <meta name="theme-color" content="#2563eb">
-  <meta name="msapplication-TileColor" content="#2563eb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  
-  <!-- Preconnect for performance -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://ajax.googleapis.com">
-  <link rel="preconnect" href="https://documentcloud.adobe.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
+  <title>Test-Time Training for Modality Order Consistency in Vision-Language Models</title>
 
-  <!-- TODO: Replace with your paper title and authors -->
-  <title>Test-Time Training for Modality Order Consistency in Vision-Language Models - Aditi Gupta, Yossi Gandelsman | Academic Research</title>
-  
-  <!-- Favicon and App Icons -->
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link rel="apple-touch-icon" href="static/images/favicon.ico">
-  
-  <!-- Critical CSS - Load synchronously -->
+
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
-  
-  <!-- Non-critical CSS - Load asynchronously -->
+
   <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  
-  <!-- Fallback for browsers that don't support preload -->
+
   <noscript>
     <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
     <link rel="stylesheet" href="static/css/bulma-slider.min.css">
     <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   </noscript>
-  
-  <!-- Fonts - Optimized loading -->
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Defer non-critical JavaScript -->
+
   <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script defer src="static/js/bulma-carousel.min.js"></script>
   <script defer src="static/js/bulma-slider.min.js"></script>
   <script defer src="static/js/index.js"></script>
-  
-  <!-- Structured Data for Academic Papers -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    "headline": "PAPER_TITLE",
-    "description": "BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS",
-    "author": [
-      {
-        "@type": "Person",
-        "name": "FIRST_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
-      },
-      {
-        "@type": "Person",
-        "name": "SECOND_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
-      }
-    ],
-    "datePublished": "2024-01-01",
-    "publisher": {
-      "@type": "Organization",
-      "name": "CONFERENCE_OR_JOURNAL_NAME"
-    },
-    "url": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE",
-    "image": "https://YOUR_DOMAIN.com/static/images/social_preview.png",
-    "keywords": ["KEYWORD1", "KEYWORD2", "KEYWORD3", "machine learning", "computer vision"],
-    "abstract": "FULL_ABSTRACT_TEXT_HERE",
-    "citation": "BIBTEX_CITATION_HERE",
-    "isAccessibleForFree": true,
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "mainEntity": {
-      "@type": "WebPage",
-      "@id": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE"
-    },
-    "about": [
-      {
-        "@type": "Thing",
-        "name": "RESEARCH_AREA_1"
-      },
-      {
-        "@type": "Thing", 
-        "name": "RESEARCH_AREA_2"
-      }
-    ]
-  }
-  </script>
-  
-  <!-- Website/Organization Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "INSTITUTION_OR_LAB_NAME",
-    "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico",
-    "sameAs": [
-      "https://twitter.com/YOUR_TWITTER_HANDLE",
-      "https://github.com/YOUR_GITHUB_USERNAME"
-    ]
-  }
-  </script>
+
+  <style>
+    .fig { width: 100%; border-radius: 6px; }
+    .fig-pair { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .fig-pair > div { flex: 1 1 0; min-width: 280px; }
+    .fig-pair img { width: 100%; border-radius: 6px; }
+  </style>
 </head>
 <body>
-
 
   <!-- Scroll to Top Button -->
   <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
     <i class="fas fa-chevron-up"></i>
   </button>
 
-<!-- Abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Vision-language models are typically evaluated with the image placed before the
-            question, but nothing about the task requires that order. We show that simply
-            swapping the two — presenting the question before the image — produces a large and
-            consistent drop in accuracy across models and benchmarks, despite the two prompts
-            being semantically identical.
-          </p>
-          <p>
-            Using activation patching, we localize this failure to a narrow band of mid-network
-            layers. Motivated by this, we introduce a KL-aligned test-time training objective
-            that adapts a small set of mid-network layers to align the weaker ordering with the
-            stronger one, requiring no retraining, no labels, and no architectural changes.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  <main id="main-content">
 
-<!-- Ordering gap -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3">A consistent gap across models and benchmarks</h2>
-    <div class="content has-text-justified">
-      <p>
-        Presenting the question before the image lowers accuracy on every model and benchmark we
-        tested — from 5 to 26 accuracy points, across InternVL2, Qwen2.5-VL, and Qwen3-VL.
-      </p>
-    </div>
-    <img src="static/images/ordering_gap.png"
-         alt="Accuracy under image-first versus question-first prompting"
-         style="width:100%; border-radius:6px;">
-    <div class="content has-text-justified" style="margin-top:1.5rem">
-      <p>
-        The gap is largest on MMStar (+26.1 points for InternVL2), the benchmark that depends most
-        heavily on the image, and smallest on RealWorldQA for the newer models (+5.2 points for
-        Qwen3-VL). Newer models shrink the gap but do not remove it.
-      </p>
-    </div>
-  </div>
-</section>
+  <!-- Title / authors / links -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
 
-<!-- MLP repair -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3">The failure is carried by MLP sublayers</h2>
-    <div class="content has-text-justified">
-      <p>
-        Splitting the network into attention heads and MLP sublayers shows the two behave very
-        differently under a change of modality order.
-      </p>
-    </div>
-    <img src="static/images/mlp_repair.png"
-         alt="NIoU alignment for attention heads and MLP sublayers, before and after TTT"
-         style="width:100%; border-radius:6px;">
-    <div class="content has-text-justified" style="margin-top:1.5rem">
-      <p>
-        Before adaptation the MLP sublayers are strongly anti-aligned across the two orderings
-        (NIoU −0.82), while attention heads are only weakly aligned either way (+0.10 before,
-        +0.15 after). Test-time training flips the MLP misalignment to strong agreement
-        (−0.82 → +0.84), and does so regardless of which layer window is adapted.
-      </p>
-    </div>
-  </div>
-</section>
+            <h1 class="title is-1 publication-title">
+              Test-Time Training for Modality Order Consistency in Vision-Language Models
+            </h1>
 
-<!-- Qualitative examples -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3">Qualitative examples</h2>
-    <div class="content has-text-justified">
-      <p>
-        Individual examples show the two orderings converging over test-time training steps: the
-        question-first trajectory moves onto the correct answer while the image-first trajectory
-        holds.
-      </p>
-    </div>
-    <img src="static/images/figure_1.png" alt="Qualitative TTT trajectories"
-         style="width:100%; border-radius:6px;">
-    <img src="static/images/figure_2.png" alt="Additional qualitative TTT trajectories"
-         style="width:100%; border-radius:6px; margin-top:2rem;">
-  </div>
-</section>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Aditi Gupta,</span>
+              <span class="author-block">Yossi Gandelsman</span>
+            </div>
 
-<!-- BibTeX -->
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <p>The preprint is not yet public. The arXiv link and final BibTeX will be posted here.</p>
-    <pre id="bibtex-code"><code>@article{gupta2026modality,
-  title  = {Test-Time Training for Modality Order Consistency in Vision-Language Models},
-  author = {Gupta, Aditi and Gandelsman, Yossi},
-  year   = {2026},
-  note   = {Preprint forthcoming}
-}</code></pre>
-  </div>
-</section>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">TTIC / University of Chicago</span>
+            </div>
 
-                  <!-- TODO: Replace with your GitHub repository URL -->
-                  <span class="link-block">
-                    <a href="https://github.com/aditiii12/modality-ordering" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
+            <div class="column has-text-centered">
+              <div class="publication-links">
+
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark" style="opacity:0.65; cursor:default;">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper (coming soon)</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://github.com/aditiii12/modality-ordering" target="_blank"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
                     <span>Code</span>
                   </a>
                 </span>
 
-                <!-- TODO: Update with your arXiv paper ID -->
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-<!-- Teaser images -->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-
-      <img src="static/images/teaser.png"
-           alt="Image-first and question-first prompts produce different predictions"
-           style="width:100%; border-radius:6px;">
-      <h2 class="subtitle has-text-centered" style="margin-top:1rem">
-        The image and the question are identical in both prompts. Only their order changes —
-        and the model's answer changes with it.
-      </h2>
-
-      <img src="static/images/patching.png"
-           alt="Activation patching recovery by layer"
-           style="width:100%; border-radius:6px; margin-top:3rem;">
-      <h2 class="subtitle has-text-centered" style="margin-top:1rem">
-        Patching image-first hidden states into the question-first forward pass recovers accuracy
-        only in a narrow band of mid-network layers, localizing where the failure lives.
-      </h2>
-
+  <!-- Teaser -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="static/images/teaser.png" class="fig"
+             alt="Image-first and question-first prompts produce different predictions">
+        <h2 class="subtitle has-text-centered" style="margin-top:1rem">
+          The image and the question are identical in both prompts. Only their order changes —
+          and the model's answer changes with it.
+        </h2>
+      </div>
     </div>
-  </div>
-</section>
-<!-- End teaser images -->
+  </section>
 
-<div class="content has-text-justified">
-          <p>
-            Vision-language models are typically evaluated with the image placed before the
-            question, but nothing about the task requires that order. We show that simply
-            swapping the two — presenting the question before the image — produces a large and
-            consistent drop in accuracy across models and benchmarks, despite the two prompts
-            being semantically identical.
-          </p>
-          <p>
-            Using activation patching, we localize this failure to a narrow band of mid-network
-            layers: patching image-first representations into the question-first forward pass at
-            these layers recovers a substantial fraction of the lost accuracy. Motivated by this,
-            we introduce a KL-aligned test-time training objective that adapts a small set of
-            mid-network layers to align the weaker ordering with the stronger one. The method
-            requires no retraining, no labels, and no architectural changes.
-          </p>
+  <!-- Abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Vision-language models are typically evaluated with the image placed before the
+              question, but nothing about the task requires that order. We show that simply
+              swapping the two — presenting the question before the image — produces a large and
+              consistent drop in accuracy across models and benchmarks, despite the two prompts
+              being semantically identical.
+            </p>
+            <p>
+              Using activation patching, we localize this failure to a narrow band of mid-network
+              layers. Motivated by this, we introduce a KL-aligned test-time training objective
+              that adapts a small set of mid-network layers to align the weaker ordering with the
+              stronger one, requiring no retraining, no labels, and no architectural changes.
+            </p>
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Ordering gap -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">A consistent gap across models and benchmarks</h2>
+      <div class="content has-text-justified">
+        <p>
+          Presenting the question before the image lowers accuracy on every model and benchmark we
+          tested — from 5 to 26 accuracy points, across InternVL2, Qwen2.5-VL, and Qwen3-VL.
+        </p>
+      </div>
 
+      <img src="static/images/ordering_gap.png" class="fig"
+           alt="Accuracy under image-first versus question-first prompting">
 
-<!-- End image carousel -->
+      <div class="content has-text-justified" style="margin-top:1.5rem">
+        <p>
+          The gap is largest on MMStar (+26.1 points for InternVL2), the benchmark that depends
+          most heavily on the image, and smallest on RealWorldQA for the newer models (+5.2 points
+          for Qwen3-VL). Newer models shrink the gap but do not remove it.
+        </p>
+      </div>
+    </div>
+  </section>
 
+  <!-- Activation patching -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">The failure is localized to a narrow mid-network band</h2>
+      <div class="content has-text-justified">
+        <p>
+          To find where the two orderings diverge, we patch image-first hidden states into the
+          question-first forward pass one layer at a time and measure whether the answer flips to
+          the correct one.
+        </p>
+      </div>
 
+      <img src="static/images/patching.png" class="fig"
+           alt="Patched question-first accuracy and recovery rate as a function of the patched layer">
 
+      <div class="content has-text-justified" style="margin-top:1.5rem">
+        <p>
+          Patching has almost no effect through the first fifteen layers. Between layers 15 and 19
+          accuracy rises sharply, then plateaus. Restricting attention to the examples that matter
+          — those the model gets right image-first and wrong question-first — makes the effect
+          starker: recovery on this subset jumps to roughly 80–93% across the same narrow band.
+        </p>
+      </div>
+    </div>
+  </section>
 
+  <!-- MLP repair -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">The failure is carried by MLP sublayers</h2>
+      <div class="content has-text-justified">
+        <p>
+          Splitting the network into attention heads and MLP sublayers shows the two behave very
+          differently under a change of modality order.
+        </p>
+      </div>
 
+      <img src="static/images/mlp_repair.png" class="fig"
+           alt="NIoU alignment for attention heads and MLP sublayers, before and after TTT">
 
+      <div class="content has-text-justified" style="margin-top:1.5rem">
+        <p>
+          Before adaptation the MLP sublayers are strongly anti-aligned across the two orderings
+          (NIoU −0.82), while attention heads are only weakly aligned either way (+0.10 before,
+          +0.15 after). Test-time training flips the MLP misalignment to strong agreement
+          (−0.82 → +0.84), and does so regardless of which layer window is adapted.
+        </p>
+      </div>
+    </div>
+  </section>
 
+  <!-- Qualitative examples -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Qualitative examples</h2>
+      <div class="content has-text-justified">
+        <p>
+          Individual examples show the two orderings converging over test-time training steps: the
+          question-first trajectory moves onto the correct answer while the image-first trajectory
+          holds.
+        </p>
+      </div>
 
-<p>The preprint is not yet public. The arXiv link and final BibTeX will be posted here.</p>
+      <div class="fig-pair">
+        <div>
+          <img src="static/images/figure_1.png" alt="Qualitative TTT trajectories, examples 1">
+        </div>
+        <div>
+          <img src="static/images/figure_2.png" alt="Qualitative TTT trajectories, examples 2">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <p>The preprint is not yet public. The arXiv link and final BibTeX will be posted here.</p>
       <pre id="bibtex-code"><code>@article{gupta2026modality,
   title  = {Test-Time Training for Modality Order Consistency in Vision-Language Models},
   author = {Gupta, Aditi and Gandelsman, Yossi},
   year   = {2026},
   note   = {Preprint forthcoming}
 }</code></pre>
+    </div>
+  </section>
+
+  </main>
 
   <footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the
+              <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>
+              which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+              You are free to borrow the source code of this website, we just ask that you link back to this page in the footer.
+              <br>
+              This website is licensed under a
+              <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<!-- Statcounter tracking code -->
-  
-<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
-
-    <!-- End of Statcounter Code -->
-
-  </body>
-  </html>
+</body>
+</html>
