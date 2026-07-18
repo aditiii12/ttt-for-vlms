@@ -198,15 +198,6 @@
       background: white;
     }
 
-    .pdf-canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: white;
-    }
-
     .figure-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -306,12 +297,9 @@
           Question-first prompting lowers accuracy on every evaluated model–benchmark pair, with gaps ranging from approximately 5 to 26 percentage points.
         </p>
         <div class="result">
-          <canvas
-            class="pdf-canvas"
-            data-pdf="static/images/fig_ordering_gap.pdf"
-            role="img"
-            aria-label="Accuracy under image-first and question-first prompting across models and datasets">
-          </canvas>
+          <img
+            src="static/images/ordering_gap.png"
+            alt="Accuracy under image-first and question-first prompting across models and datasets">
         </div>
         <p class="caption">
           Image-first prompting consistently outperforms question-first prompting across InternVL2, Qwen2.5-VL, and Qwen3-VL.
@@ -326,12 +314,9 @@
           We patch image-first hidden states into the question-first forward pass one layer at a time and measure recovery of the stronger ordering's behavior.
         </p>
         <div class="result">
-          <canvas
-            class="pdf-canvas"
-            data-pdf="static/images/fig_patching.pdf"
-            role="img"
-            aria-label="Activation-patching accuracy and recovery as a function of transformer layer">
-          </canvas>
+          <img
+            src="static/images/fig_patching.png"
+            alt="Activation-patching accuracy and recovery as a function of transformer layer">
         </div>
         <p class="caption">
           Patching has little effect in early layers, followed by a sharp recovery within a narrow mid-network region.
@@ -346,12 +331,9 @@
           The two modality orderings are strongly misaligned in MLP sublayers before adaptation; test-time training shifts them toward agreement.
         </p>
         <div class="result">
-          <canvas
-            class="pdf-canvas"
-            data-pdf="static/images/fig_mlp_repair.pdf"
-            role="img"
-            aria-label="Internal alignment before and after test-time training">
-          </canvas>
+          <img
+            src="static/images/mlp_repair.png"
+            alt="Internal alignment before and after test-time training">
         </div>
       </div>
     </section>
@@ -389,48 +371,5 @@
     </div>
   </footer>
 
-  <script type="module">
-    import * as pdfjsLib from
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
-
-    async function renderPDF(canvas) {
-      try {
-        const pdf = await pdfjsLib.getDocument(canvas.dataset.pdf).promise;
-        const page = await pdf.getPage(1);
-        const initialViewport = page.getViewport({ scale: 1 });
-        const displayWidth = canvas.parentElement.clientWidth;
-        const pixelRatio = window.devicePixelRatio || 1;
-        const displayScale = displayWidth / initialViewport.width;
-        const renderViewport = page.getViewport({
-          scale: displayScale * pixelRatio
-        });
-
-        canvas.width = Math.ceil(renderViewport.width);
-        canvas.height = Math.ceil(renderViewport.height);
-        canvas.style.width = `${displayWidth}px`;
-        canvas.style.height = `${renderViewport.height / pixelRatio}px`;
-
-        await page.render({
-          canvasContext: canvas.getContext("2d"),
-          viewport: renderViewport
-        }).promise;
-      } catch (error) {
-        const fallback = document.createElement("p");
-        const link = document.createElement("a");
-        link.href = canvas.dataset.pdf;
-        link.textContent = "Open this figure as a PDF";
-        fallback.append("This figure could not be rendered. ", link);
-        canvas.replaceWith(fallback);
-        console.error("Could not render PDF figure:", error);
-      }
-    }
-
-    window.addEventListener("load", () => {
-      document.querySelectorAll(".pdf-canvas").forEach(renderPDF);
-    });
-  </script>
 </body>
 </html>
